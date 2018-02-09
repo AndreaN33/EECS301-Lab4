@@ -91,7 +91,7 @@ The PDF version of the lab report also needs to be submitted to Canvas by the sa
 
 ## Grading Rubric
 
-**Lab 4 is worth 140 Points Total:**
+**Lab 4 is worth 150 Points Total:**
 
 *   50 points for the correct implementation of **BCD\_Segment\_Decoder** module
 *   10 points for the simulation screenshots of the **TF\_BCD\_Segment\_Decoder** Test Bench waveform and the Transcript message window showing 0 test errors
@@ -100,6 +100,7 @@ The PDF version of the lab report also needs to be submitted to Canvas by the sa
 *   30 points for the correct implementation of **BCD\_Binary\_Encoder** module 
 *   10 points for the simulation screenshots of the **TF\_BCD\_Binary\_Encoder** Test Bench waveform and the Transcript message window showing 0 test errors
 	* NOTE: This can be a single image showing both windows.
+*   10 points for a correct verification of the operation of the Calculator by a TA.
 *   20 points for the content of the lab report
 *   5 points for the completed lab report submitted in Markdown format to GitHub repo
 *   5 points for the completed lab report in PDF format submitted to Canvas
