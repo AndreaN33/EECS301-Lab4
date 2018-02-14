@@ -121,5 +121,103 @@ module BCD_Binary_Encoder
 	
 	// !! Lab 4: Implement the BCD Binary Encoder State Machine here !!
 	
+	reg [4:0] State;
+	localparam [3:0]
+		S0 = 5'b00001,
+		S1 = 5'b00010,
+		S2 = 5'b00100,
+		S3 = 5'b01000,
+		S4 = 5'b10000;
+	
+	always @(posedge CLK, posedge RESET)
+	begin
+
+			if (RESET)
+			begin
+			
+				DONE <= 1'b0;
+				BCD_OUT <= 4'b0000;
+				BCD_OVERFLOW <= 1'b0;
+
+				shift_counter_reg <= {SHIFT_COUNTER_WIDTH{1'b0}};
+				bin_shift_reg <= {BIN_WIDTH{1'b0}};
+				bcd_shift_reg <= {BCD_WIDTH{1'b0}};
+				overflow_flag <= 0;
+				
+				State <= S0;
+			
+			end
+			else
+			begin
+			
+					case (State)
+						
+							S0 :
+							begin
+								DONE <= 1'b0;
+								if(CONVERT)
+									State <= S1;
+
+							end
+							
+							S1 :
+							begin
+								//Load Binary Shift Reg
+								bin_shift_reg <= BIN_IN;
+								//Clear BCD Shift Reg
+								bcd_shift_reg <= {BCD_WIDTH{1'b0}};
+								//Reload Shift Counter Reg
+								shift_counter_reg <= SHIFT_COUNTER_LOADVAL;
+								//Clear Overflow
+								overflow_flag <= 0;
+								
+								State <= S2;
+							
+							end
+							
+							S2 :
+							begin
+							
+								overflow_flag <= bcd_shift_reg[BCD_WIDTH-1];
+								bcd_shift_reg <= {bcd_shift_reg[BCD_WIDTH-2:0], bin_shift_reg[BIN_WIDTH-1]};
+								bin_shift_reg <= {bin_shift_reg[BIN_WIDTH-2:0], 1'b0};
+								
+								if(shift_counter_done)
+									State <= S4;
+								else
+									State <= S3;
+							
+							end
+							
+							S3 :
+							begin
+							
+								bcd_shift_reg <= bcd_adder_sum;
+								shift_counter_reg <= shift_counter_reg + 1'b1;
+							
+								State <= S2;
+							end
+							
+							S4 :
+							begin
+							
+								//LOad BCD_OUT
+								BCD_OUT <= bcd_shift_reg;
+								
+								//Load BCD_OVERFLOW
+								BCD_OVERFLOW <= overflow_flag;
+								
+								//Assert Done
+								DONE <= 1'b1;
+								
+								State <= S0;
+								
+							end
+						
+					endcase
+				
+			end
+		
+	end
 
 endmodule

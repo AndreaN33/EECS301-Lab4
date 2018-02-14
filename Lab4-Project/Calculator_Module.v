@@ -81,6 +81,97 @@ module Calculator_Module
 	//
 
 	// !! Lab 4: Add Calculator State Machine implementation here !!
+	
+	reg [3:0] State;
+	localparam [3:0]
+		S0 = 4'b0001,
+		S1 = 4'b0010,
+		S2 = 4'b0100,
+		S3 = 4'b1000;
+		
+always @(posedge CLK, posedge RESET)
+begin
+
+		if (RESET)
+		begin
+				DONE <= 1'b0;
+				RESULT_READY <= 1'b0;
+
+				oper_cin <= 1'b0;
+				oper_bin <= {RESULT_WIDTH{1'b0}};
+				accumulator_reg <= {RESULT_WIDTH{1'b0}};
+
+				State <= S0;
+		
+		end
+		else
+		begin
+		
+				case (State)
+				
+					S0 :
+					begin
+						//clear Result Ready signal
+						RESULT_READY <= 1'b0;
+						//clear done signal
+						DONE <= 1'b0;
+						
+						if(CLEAR)
+							State <= S3;
+						else if(COMPUTE)
+							State <= S1;
+						
+
+					end
+					
+					S1 :
+					begin
+						case (OPERATION)
+							1'b0 : { oper_cin, oper_bin } <= { 1'b0,  calc_data_ext }; // Add
+							1'b1 : { oper_cin, oper_bin } <= { 1'b1, ~calc_data_ext }; // Sub
+						endcase
+
+						State <= S2;
+					
+					end
+					
+					S2 :
+					begin
+					
+						// Store the result
+						accumulator_reg <= adder_result;
+
+						// Assert Result Ready
+						RESULT_READY <= 1'b1;
+
+						// Command Done
+						DONE <= 1'b1;
+
+						State <= S0;	
+					
+					end
+					
+					S3 :
+					begin
+					
+						// Clear accumulator register
+						accumulator_reg <= {RESULT_WIDTH{1'b0}};
+
+						// Assert Result Ready
+						RESULT_READY <= 1'b1;
+
+						// Command Done
+						DONE <= 1'b1;
+
+						State <= S0;
+					
+					end
+					
+				endcase
+			
+		end
+	
+end
 
 	
 endmodule
