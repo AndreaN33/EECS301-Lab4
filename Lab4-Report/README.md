@@ -1,8 +1,8 @@
 # EECS301 Lab #4 Report
 
-**Andrea Norris (adn33@case.edu)**
-**Team #6**
-**Github User: AndreaN33**
+* **Andrea Norris (adn33@case.edu)**
+* **Team #6**
+* **Github User: AndreaN33**
 
 ## Introduction
 This project uses State Machines to implement a two-function calculator. This logic is
